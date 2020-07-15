@@ -1,0 +1,88 @@
+.btn-label{
+    font-size: 20px;
+    font-weight: 500;
+    margin: 15px;
+}
+.epic{
+    background-color: #2196f3;
+    border-radius: 6px;
+    box-shadow: 1px 2px 10px 0px rgba(179,179,179,1);
+    color: white;
+    height: auto;
+    display: table;
+    table-layout: fixed;
+    width: 325px;
+    margin-left: 10px;
+    margin-top: 10px;
+    margin-right: 10px;
+}
+.release{
+    background-color: #915397;
+    border-radius: 6px;
+    box-shadow: 1px 2px 10px 0px rgba(179,179,179,1);
+    color: white;
+    height: auto;
+    table-layout: fixed;
+    display: table;
+    margin-left: 175px;
+    /* margin-bottom: 10px; */
+    width: 325px;
+}
+.feature{
+    background-color: #e91e63;
+    border-radius: 6px;
+    box-shadow: 1px 2px 10px 0px rgba(179,179,179,1);
+    color: white;
+    height: auto;
+    table-layout: fixed;
+    display: table;
+    margin-left: 175px;
+    /* margin-bottom: 10px; */
+    width: 325px;
+}
+.user-story{
+    background-color: #009688;
+    border-radius: 6px;
+    box-shadow: 1px 2px 10px 0px rgba(179,179,179,1);
+    color: white;
+    height: auto;
+    table-layout: fixed;
+    display: table;
+    margin-left: 175px;
+    /* margin-bottom: 10px; */
+    width: 325px;
+}
+.task{
+    background-color: #00bcd4;
+    border-radius: 6px;
+    box-shadow: 1px 2px 10px 0px rgba(179,179,179,1);
+    color: white;
+    height: auto;
+    table-layout: fixed;
+    margin-left: 175px;
+    /* margin-bottom: 10px; */
+    width: 325px;
+}
+.margin-btm{
+    margin-bottom: 10px;
+}
+.action-btn{
+    display: inline-flex;
+    margin-left: 215px;
+}
+.card-content{
+    width: 325px;
+    padding-left: 10px;
+    margin-top: -45px;
+    padding-bottom: 15px;
+}
+.card-title{
+
+}
+.card-text{
+    
+}
+.card-speaker{
+    display: block;
+    padding-top: 10px;
+}

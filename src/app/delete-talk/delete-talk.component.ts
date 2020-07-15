@@ -1,6 +1,5 @@
 import { Component, OnInit, Inject } from '@angular/core';
-// import { MAT_DIALOG_DATA } from '@angular/material';
-import {MAT_DIALOG_DATA} from '@angular/material/dialog';
+import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Talk } from '../shared/models/schema.model';
 
 @Component({
@@ -10,7 +9,7 @@ import { Talk } from '../shared/models/schema.model';
 })
 export class DeleteTalkComponent implements OnInit {
 
-  constructor(@Inject(MAT_DIALOG_DATA) public talk: Talk) {}
+  constructor(@Inject(MAT_DIALOG_DATA) public talk: Talk) { }
 
   ngOnInit() {
   }

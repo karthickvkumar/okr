@@ -5,6 +5,7 @@ export interface Tag {
 export interface Talk {
     id: string;
     text: string;
+    title: string;
     speaker?: string;
     tags?: Tag[];
     linked?: Talk[];

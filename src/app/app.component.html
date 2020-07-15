@@ -1,4 +1,5 @@
-<app-drawer>
+<app-boards></app-boards>
+<!-- <app-drawer>
   <div *ngFor="let board of boards; let boardIndex = index;" class="board" cdkDropList [cdkDropListData]="board.tracks"
     (cdkDropListDropped)="onTrackDrop($event)" cdkDropListOrientation="horizontal">
 
@@ -9,7 +10,7 @@
             (input)="track.title=$event.target.textContent"></span></h2>
         <div fxFlex="20" fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="5px" cdkDragHandle>
           <!-- Filter Menu Starts Here-->
-          <button fxFlex="50" mat-icon-button [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu">
+<!--<button fxFlex="50" mat-icon-button [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu">
             <mat-icon>filter_list</mat-icon>
           </button>
           <mat-menu #menu="matMenu">
@@ -30,7 +31,7 @@
 
       <!-- Filter Menu Ends Here-->
 
-      <div *ngIf="!track['collapsed']" class="card-list-content" cdkDropList [id]="track.id"
+<!-- <div *ngIf="!track['collapsed']" class="card-list-content" cdkDropList [id]="track.id"
         [cdkDropListData]="track.talks" [cdkDropListConnectedTo]="trackIds(boardIndex)"
         (cdkDropListDropped)="onTalkDrop($event)">
 
@@ -47,10 +48,10 @@
         <!-- <span fxFlex style="text-align: right; cursor: pointer;"
           (click)="track['collapsed'] = !track['collapsed']">Click to
           {{ track['collapsed'] ? 'expand' : 'collapse'}}</span> -->
-      </div>
+<!--</div>
     </div>
 
   </div>
 </app-drawer>
 
-<!-- <router-outlet></router-outlet> -->
+<router-outlet></router-outlet> -->

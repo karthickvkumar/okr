@@ -1,4 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, FormArray, Validators } from '@angular/forms';
+
 import { BoardService } from './board.service';
 import { CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
 import { EditTalkComponent } from './edit-talk/edit-talk.component';
@@ -13,7 +15,9 @@ import { Board, Talk, Track } from './shared/models/schema.model';
 })
 export class AppComponent {
   boards: Board[] = [];
-  constructor(private _boardService: BoardService, private _dialog: MatDialog) {
+
+
+  constructor(private formBuilder: FormBuilder, private _boardService: BoardService, private _dialog: MatDialog) {
     this.boards = this._boardService.getBoards();
   }
 
@@ -53,7 +57,7 @@ export class AppComponent {
       .subscribe((newTalkData) => {
         if (!edit && newTalkData instanceof Object) {
           newTalkData.id = this.generateGuid();
-          newTalkData.height = 72;
+          //newTalkData.height = 72;
           newTalkData instanceof Object ? track.talks.push(newTalkData) : null
         }
         else {
@@ -88,5 +92,9 @@ export class AppComponent {
       result = result + i;
     }
     return result;
+  }
+
+  print() {
+    console.log(this.boards)
   }
 }

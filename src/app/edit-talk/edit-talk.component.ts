@@ -20,7 +20,7 @@ export class EditTalkComponent implements OnInit {
   linked;
   issueTypesArrayWithColor = Object.values(appConstants.issueTypeListWithColor);
   constructor(
-    @Inject(MAT_DIALOG_DATA) public data: { talk: Talk, edit: boolean, boards: Board, track: Track },
+    @Inject(MAT_DIALOG_DATA) public data: { card: Talk },
     private dialogRef: MatDialogRef<EditTalkComponent>,
     public formBuilder: FormBuilder,
     public colorPickerdialog: MatDialog
@@ -28,21 +28,15 @@ export class EditTalkComponent implements OnInit {
   }
 
   ngOnInit() {
-    const talk = this.data && this.data.talk ? this.data.talk : null;
-    this.track = this.data && this.data.track ? this.data.track : null;
-    this.boards = this.data && this.data.boards ? this.data.boards[0] : null;
-    const trackIndex = this.boards.tracks.findIndex(track => track.id == talk.id) - 1;
-    const linkList = trackIndex > -1 ? this.boards.tracks[trackIndex] : null;
-    this.linked = linkList && linkList.talks ? linkList.talks : [];
+    const card = this.data && this.data.card ? this.data.card : null;
 
     this.formGroup = this.formBuilder.group({
-      text: [talk && talk.text ? talk.text : '', Validators.required],
-      speaker: [talk && talk.speaker ? talk.speaker : '', Validators.required],
-      image: [talk && talk.image ? talk.image : ''],
-      linked: [talk && talk.linked ? talk.linked : ''],
-      tags: [talk && talk.tags ? talk.tags : []],
-      issueType: [this.track && this.track.id ? this.track.id : ''],
-      createdAt: [talk && talk.createdAt ? talk.createdAt : new Date()]
+      title: [card && card.title ? card.title : '', Validators.required],
+      text: [card && card.text ? card.text : '', Validators.required],
+      speaker: [card && card.speaker ? card.speaker : '', Validators.required],
+      image: [card && card.image ? card.image : ''],
+      tags: [card && card.tags ? card.tags : []],
+      createdAt: [card && card.createdAt ? card.createdAt : new Date()]
     });
   }
 

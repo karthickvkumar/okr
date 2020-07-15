@@ -6,9 +6,9 @@ import { Board } from './shared/models/schema.model';
 })
 export class BoardService {
 
-  private _boards: Board[] = require('./data.json');
+  private _response: any = require('./data.json');
 
   getBoards(): Board[] {
-    return this._boards;
+    return this._response.boards;
   }
 }

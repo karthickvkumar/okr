@@ -12,21 +12,23 @@ import { DragDropModule } from '@angular/cdk/drag-drop';
 import { EditTalkComponent } from './edit-talk/edit-talk.component';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { DeleteTalkComponent } from './delete-talk/delete-talk.component';
-import {MatToolbarModule} from '@angular/material/toolbar';
-import {MatButtonModule} from '@angular/material/button';
-import {MatSidenavModule} from '@angular/material/sidenav';
-import {MatIconModule} from '@angular/material/icon';
-import {MatListModule} from '@angular/material/list';
-import {MatCardModule} from '@angular/material/card';
-import {MatChipsModule} from '@angular/material/chips';
-import {MatDialogModule} from '@angular/material/dialog';
-import {MatInputModule} from '@angular/material/input';
-import {MatMenuModule} from '@angular/material/menu';
+import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatButtonModule } from '@angular/material/button';
+import { MatSidenavModule } from '@angular/material/sidenav';
+import { MatIconModule } from '@angular/material/icon';
+import { MatListModule } from '@angular/material/list';
+import { MatCardModule } from '@angular/material/card';
+import { MatChipsModule } from '@angular/material/chips';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatInputModule } from '@angular/material/input';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { CommonModule } from '@angular/common';
 import { ColorChromeModule } from 'ngx-color/chrome'; // <color-chrome></color-chrome>
 import { ColorPickerDialogComponent } from './shared/components/color-picker-dialog/color-picker-dialog.component';
 import { MatOptionModule } from '@angular/material/core';
 import { MatSelectModule } from '@angular/material/select';
+import { BoardsComponent } from './boards/boards.component';
 
 
 
@@ -37,7 +39,8 @@ import { MatSelectModule } from '@angular/material/select';
     CardComponent,
     EditTalkComponent,
     DeleteTalkComponent,
-    ColorPickerDialogComponent
+    ColorPickerDialogComponent,
+    BoardsComponent
   ],
   imports: [
     CommonModule,
@@ -62,7 +65,8 @@ import { MatSelectModule } from '@angular/material/select';
     MatMenuModule,
     MatOptionModule,
     MatSelectModule,
-    ColorChromeModule
+    ColorChromeModule,
+    MatTooltipModule
   ],
   providers: [],
   entryComponents: [EditTalkComponent, DeleteTalkComponent],
