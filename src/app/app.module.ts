@@ -1,6 +1,7 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { FlexLayoutModule } from '@angular/flex-layout';
+import * as _moment from 'moment';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -23,12 +24,15 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { MatInputModule } from '@angular/material/input';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { NgxDaterangepickerMd } from 'ngx-daterangepicker-material';
+
 import { CommonModule } from '@angular/common';
 import { ColorChromeModule } from 'ngx-color/chrome'; // <color-chrome></color-chrome>
 import { ColorPickerDialogComponent } from './shared/components/color-picker-dialog/color-picker-dialog.component';
 import { MatOptionModule } from '@angular/material/core';
 import { MatSelectModule } from '@angular/material/select';
 import { BoardsComponent } from './boards/boards.component';
+import { FormatPipe } from './format.pipe';
 
 
 
@@ -40,7 +44,8 @@ import { BoardsComponent } from './boards/boards.component';
     EditTalkComponent,
     DeleteTalkComponent,
     ColorPickerDialogComponent,
-    BoardsComponent
+    BoardsComponent,
+    FormatPipe
   ],
   imports: [
     CommonModule,
@@ -66,7 +71,8 @@ import { BoardsComponent } from './boards/boards.component';
     MatOptionModule,
     MatSelectModule,
     ColorChromeModule,
-    MatTooltipModule
+    MatTooltipModule,
+    NgxDaterangepickerMd.forRoot()
   ],
   providers: [],
   entryComponents: [EditTalkComponent, DeleteTalkComponent],

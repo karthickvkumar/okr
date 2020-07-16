@@ -12,6 +12,7 @@ export interface Talk {
     height: number;
     image?: string;
     createdAt?: Date;
+    status: any[];
     issueType?: IssueType;
 }
 

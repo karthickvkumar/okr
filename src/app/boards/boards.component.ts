@@ -1,12 +1,14 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, HostListener, Input, QueryList, ViewChildren } from '@angular/core';
+import { NgForOfContext } from '@angular/common';
+
 import { CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
 import { cloneDeep } from "lodash";
+import * as moment from 'moment';
 
 import { EditTalkComponent } from '../edit-talk/edit-talk.component';
 import { MatDialog } from '@angular/material/dialog';
 import { DeleteTalkComponent } from '../delete-talk/delete-talk.component';
 import { Board, Talk, Track } from '../shared/models/schema.model';
-
 
 @Component({
   selector: 'app-boards',
@@ -20,25 +22,20 @@ export class BoardsComponent implements OnInit {
     talks: []
   };
 
-  sampleCard = {
-    "text": "Agreed joy vanity regret met may ladies oppose who. Mile fail as left as hard eyes. Meet made call in mean four year it to.",
-    "speaker": "Developer",
-    "image": "",
-    "tags": [],
-    "issueType": "",
-    "createdAt": "2020-06-29T14:24:04.055Z",
-    "id": "67F29845-E217-D6E3-4D38-49542A8DC598"
-  }
-
   cardSchema: any = {
     id: '',
-    title: "",
+    title: "Workflow Title",
     text: "Agreed joy vanity regret met may ladies oppose who. Mile fail as left as hard eyes. Meet made call in mean four year it to.",
-    speaker: 'Developer',
+    speaker: 'Pramod George',
     image: '',
-    tags: '',
+    tags: [{ name: 'okr' }, { name: 'research' }],
     cardType: '',
+    status: 'ToDo',
     createdAt: '',
+    selectedDate: {
+      start: moment(new Date),
+      end: moment(new Date)
+    },
     color: '',
     talks: []
   };
@@ -50,31 +47,37 @@ export class BoardsComponent implements OnInit {
     }, {
       cardType: 'Release',
       color: 'yellow'
-    }, {
-      cardType: 'Feature',
-      color: 'green'
-    }, {
-      cardType: 'User Story',
-      color: 'orange'
-    }, {
-      cardType: 'Task',
-      color: 'pink'
     }
   ];
 
   cards: any;
-
+  innerWidth: any;
+  innerHeight: any;
+  heightOffset: number = 65;
   constructor(private _dialog: MatDialog) { }
 
   ngOnInit(): void {
+    this.innerWidth = window.innerWidth;
+    this.innerHeight = window.innerHeight;
     this.cards = this.cardConfig.map((card) => {
-      let title = 'Workflow - ' + card.cardType;
-      return { ...this.cardSchema, cardType: card.cardType, color: card.color, title };
+      return { ...this.cardSchema, cardType: card.cardType, color: card.color };
     });
   }
 
-  addCard(card, index) {
+  @HostListener('window:resize', ['$event'])
+  onResize(event) {
+    this.innerWidth = window.innerWidth;
+    this.innerHeight = window.innerHeight;
+  }
+
+  newCard(card, index) {
     let newCard = cloneDeep(this.cards[index]);
+    newCard.id = this.generateGuid();
+    card.talks.push(newCard);
+  }
+
+  addCard(card) {
+    let newCard = cloneDeep(this.cards[1]);
     newCard.id = this.generateGuid();
     card.talks.push(newCard);
   }

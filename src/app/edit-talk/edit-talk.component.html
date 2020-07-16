@@ -1,22 +1,31 @@
 <form [formGroup]="formGroup" (ngSubmit)="onSubmit()">
   <img *ngIf="data?.card.image" [src]="data?.card.image" alt="Talk image preview">
   <mat-form-field>
-    <input matInput placeholder="Workflow Title" required formControlName="title">
+    <input matInput placeholder="Workflow Title" formControlName="title">
   </mat-form-field>
   <mat-form-field>
     <textarea matInput placeholder="Talk description" required formControlName="text"></textarea>
   </mat-form-field>
-  <!-- <mat-form-field>
-    <mat-label>Issue Type</mat-label>
-    <mat-select formControlName="issueType">
-      <mat-option [style.background]="i.color" *ngFor="let i of issueTypesArrayWithColor" [value]="i.name">
+
+  <mat-form-field>
+    <mat-label>Status</mat-label>
+    <mat-select formControlName="status" [(value)]="data?.card.status">
+      <mat-option [style.background]="i.color" *ngFor="let i of cardStatus" [value]="i.name" class="status-option">
         {{i.name}}
       </mat-option>
     </mat-select>
-  </mat-form-field> -->
+  </mat-form-field>
+
   <mat-form-field>
     <input matInput placeholder="Speaker" required formControlName="speaker">
   </mat-form-field>
+
+  <mat-form-field>
+    <input type="text" matInput ngxDaterangepickerMd [locale]="{format: 'DD-MM-YYYY'}" [autoApply]="true"
+      startKey="start" endKey="end" name="daterange" formControlName="selectedDate"
+      placeholder="Start date and End date" required />
+  </mat-form-field>
+
   <!-- <mat-form-field>
     <input matInput placeholder="Image URL" formControlName="image">
   </mat-form-field> -->
@@ -25,7 +34,7 @@
     <mat-select formControlName="linked">
       <mat-option *ngFor="let i of linked" [value]="i">
         {{i.text}}
-      </mat-option>
+      </mat-option> 
     </mat-select>
   </mat-form-field> -->
   <mat-form-field>
