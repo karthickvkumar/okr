@@ -1,5 +1,4 @@
 import { Component, OnInit, HostListener, Input, QueryList, ViewChildren } from '@angular/core';
-import { NgForOfContext } from '@angular/common';
 
 import { CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
 import { cloneDeep } from "lodash";
@@ -8,7 +7,6 @@ import * as moment from 'moment';
 import { EditTalkComponent } from '../edit-talk/edit-talk.component';
 import { MatDialog } from '@angular/material/dialog';
 import { DeleteTalkComponent } from '../delete-talk/delete-talk.component';
-import { Board, Talk, Track } from '../shared/models/schema.model';
 
 @Component({
   selector: 'app-boards',
@@ -86,7 +84,7 @@ export class BoardsComponent implements OnInit {
     this._dialog.open(EditTalkComponent, { data: { card }, width: '500px' })
       .afterClosed()
       .subscribe((newTalkData) => {
-        Object.assign(talks[index], newTalkData)
+        Object.assign(card, newTalkData)
       });
   }
 
@@ -110,6 +108,10 @@ export class BoardsComponent implements OnInit {
       result = result + i;
     }
     return result;
+  }
+
+  export() {
+    console.log(this.boards.talks)
   }
 
 }

@@ -6,11 +6,14 @@
             <button style="background-color:#3f51b5; color: white" mat-raised-button (click)="newCard(boards, 0)">
                 Add New Epic
             </button>
+            <!-- <button style="background-color:#3f51b5; color: white" mat-raised-button (click)="export()">
+                Export
+            </button> -->
         </div>
 
         <div *ngFor="let board of boards.talks; let boardIndex = index; let lastIndex = last">
             <ng-template [ngTemplateOutlet]="recursiveBoard"
-                [ngTemplateOutletContext]="{ $implicit: board, boards: boards, boardIndex:boardIndex, lastIndex: lastIndex}">
+                [ngTemplateOutletContext]="{ $implicit: board, boards: boards.talks, boardIndex:boardIndex, lastIndex: lastIndex}">
             </ng-template>
         </div>
     </div>
@@ -31,7 +34,7 @@
                         <mat-icon>create</mat-icon>
                         <span>Edit</span>
                     </button>
-                    <button mat-menu-item (click)="deleteCard(board, boards.talks, boardIndex)">
+                    <button mat-menu-item (click)="deleteCard(board, boards, boardIndex)">
                         <mat-icon>delete</mat-icon><span>Delete</span>
                     </button>
                 </mat-menu>
@@ -57,16 +60,13 @@
             </div>
             <div *ngIf="board.talks.length" style="display: table-cell;">
 
-                <div *ngFor="let board of board.talks; let boardIndex = index; let lastIndex = last">
+                <div *ngFor="let b of board.talks; let boardIndex = index; let lastIndex = last">
                     <ng-template [ngTemplateOutlet]="recursiveBoard"
-                        [ngTemplateOutletContext]="{ $implicit: board, boards: boards, boardIndex:boardIndex, lastIndex: lastIndex}">
+                        [ngTemplateOutletContext]="{ $implicit: b, boards: board.talks, boardIndex:boardIndex, lastIndex: lastIndex}">
                     </ng-template>
                 </div>
 
             </div>
         </div>
     </ng-template>
-
-
-
 </app-drawer>

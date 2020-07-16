@@ -33,7 +33,8 @@ import { MatOptionModule } from '@angular/material/core';
 import { MatSelectModule } from '@angular/material/select';
 import { BoardsComponent } from './boards/boards.component';
 import { FormatPipe } from './format.pipe';
-
+import { LoginComponent } from './login/login.component';
+import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
 
 
 @NgModule({
@@ -45,7 +46,9 @@ import { FormatPipe } from './format.pipe';
     DeleteTalkComponent,
     ColorPickerDialogComponent,
     BoardsComponent,
-    FormatPipe
+    FormatPipe,
+    LoginComponent,
+    PageNotFoundComponent
   ],
   imports: [
     CommonModule,
