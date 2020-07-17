@@ -1,5 +1,8 @@
 import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+
 import { Router } from '@angular/router';
+import { BoardService } from '../board.service';
 
 @Component({
   selector: 'app-login',
@@ -8,13 +11,24 @@ import { Router } from '@angular/router';
 })
 export class LoginComponent implements OnInit {
 
-  constructor(private router: Router) { }
+  formGroup: FormGroup;
+  isLoading: boolean = false;
+  constructor(private router: Router, private boardAPI: BoardService, public formBuilder: FormBuilder) { }
 
   ngOnInit(): void {
+    this.formGroup = this.formBuilder.group({
+      username: ['', Validators.required]
+    })
   }
 
   onLogin() {
-    this.router.navigateByUrl('/boards');
+    const user = { username: this.formGroup.get('username').value };
+    this.isLoading = true;
+    this.boardAPI.login(user).subscribe((response) => {
+      this.isLoading = false;
+      localStorage.setItem('username', user.username);
+      this.router.navigateByUrl('/boards');
+    });
   }
 
 }

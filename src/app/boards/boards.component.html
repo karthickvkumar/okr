@@ -11,7 +11,7 @@
             </button> -->
         </div>
 
-        <div *ngFor="let board of boards.talks; let boardIndex = index; let lastIndex = last">
+        <div *ngFor="let board of boards.talks; let boardIndex = index; let lastIndex = last;">
             <ng-template [ngTemplateOutlet]="recursiveBoard"
                 [ngTemplateOutletContext]="{ $implicit: board, boards: boards.talks, boardIndex:boardIndex, lastIndex: lastIndex}">
             </ng-template>
@@ -42,10 +42,10 @@
                     <mat-icon>add_box</mat-icon>
                 </button> -->
             </div>
-            <div class="card-content">
-                <!-- <h3 class="card-title">{{board.title}}</h3> -->
+            <div class="card-content" (click)="editCard($event,board, boards.talks, boardIndex)">
+                <!-- <h3 class="card-title">{{board.text}}</h3> -->
                 <div class="card-text-wrap">
-                    <span class="card-text">{{board.text}}</span>
+                    <span class="card-text">{{board.title}}</span>
                     <!-- <span class="card-ellipse">...</span> -->
                 </div>
                 <div class="date-warp">
@@ -59,8 +59,9 @@
                 </div>
             </div>
             <div *ngIf="board.talks.length" style="display: table-cell;">
+                <div
+                    *ngFor="let b of board.talks; let boardIndex = index; let lastIndex = last; let firstIndex = first">
 
-                <div *ngFor="let b of board.talks; let boardIndex = index; let lastIndex = last">
                     <ng-template [ngTemplateOutlet]="recursiveBoard"
                         [ngTemplateOutletContext]="{ $implicit: b, boards: board.talks, boardIndex:boardIndex, lastIndex: lastIndex}">
                     </ng-template>

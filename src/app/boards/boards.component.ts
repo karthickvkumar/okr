@@ -7,6 +7,7 @@ import * as moment from 'moment';
 import { EditTalkComponent } from '../edit-talk/edit-talk.component';
 import { MatDialog } from '@angular/material/dialog';
 import { DeleteTalkComponent } from '../delete-talk/delete-talk.component';
+import { BoardService } from '../board.service';
 
 @Component({
   selector: 'app-boards',
@@ -51,8 +52,10 @@ export class BoardsComponent implements OnInit {
   cards: any;
   innerWidth: any;
   innerHeight: any;
+  isLoading: boolean = false;
   heightOffset: number = 65;
-  constructor(private _dialog: MatDialog) { }
+
+  constructor(private _dialog: MatDialog, private boardAPI: BoardService) { }
 
   ngOnInit(): void {
     this.innerWidth = window.innerWidth;
@@ -60,6 +63,22 @@ export class BoardsComponent implements OnInit {
     this.cards = this.cardConfig.map((card) => {
       return { ...this.cardSchema, cardType: card.cardType, color: card.color };
     });
+    this.getBoard();
+  }
+
+  getBoard() {
+    this.isLoading = true;
+    this.boardAPI.getBoards().subscribe((response: any) => {
+      this.isLoading = false;
+      if (response?.error?.text) {
+        console.error(response.error.text)
+        return;
+      }
+      this.boards = response;
+      if (response?.talks.length == 0) {
+        console.log("There is not card to display")
+      }
+    })
   }
 
   @HostListener('window:resize', ['$event'])
@@ -72,19 +91,31 @@ export class BoardsComponent implements OnInit {
     let newCard = cloneDeep(this.cards[index]);
     newCard.id = this.generateGuid();
     card.talks.push(newCard);
+    this.isLoading = true;
+    this.boardAPI.addCard(this.boards).subscribe((response) => {
+      this.isLoading = false;
+    });
   }
 
   addCard(card) {
     let newCard = cloneDeep(this.cards[1]);
     newCard.id = this.generateGuid();
     card.talks.push(newCard);
+    this.boardAPI.addCard(this.boards).subscribe((response) => {
+      this.isLoading = false;
+    });
   }
 
-  editCard(card, talks, index) {
+  editCard(event, card, talks, index) {
+    event.stopPropagation();
     this._dialog.open(EditTalkComponent, { data: { card }, width: '500px' })
       .afterClosed()
       .subscribe((newTalkData) => {
-        Object.assign(card, newTalkData)
+        Object.assign(card, newTalkData);
+        this.boardAPI.editCard(this.boards).subscribe((response) => {
+          this.isLoading = false;
+
+        });
       });
   }
 
@@ -95,6 +126,10 @@ export class BoardsComponent implements OnInit {
         if (response) {
           talks.splice(index, 1);
         }
+        this.boardAPI.editCard(this.boards).subscribe((response) => {
+          this.isLoading = false;
+
+        });
       });
   }
 

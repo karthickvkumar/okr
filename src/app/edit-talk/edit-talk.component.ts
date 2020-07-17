@@ -19,7 +19,6 @@ export class EditTalkComponent implements OnInit {
   formGroup: FormGroup;
   boards: Board;
   track: Track;
-  linked;
   cardStatus = [{ name: 'ToDo', color: '#3f51b5' }, { name: 'InProgress', color: '#ff9800' }, { name: 'Pending', color: '#e91e63' }, { name: 'Done', color: '#4caf50' }]
 
   @ViewChild(DaterangepickerDirective, { static: true }) picker: DaterangepickerDirective;
