@@ -1,13 +1,12 @@
 import { Component, OnInit, HostListener, Input, QueryList, ViewChildren } from '@angular/core';
-
 import { CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
-import { cloneDeep } from "lodash";
-import * as moment from 'moment';
-
 import { EditTalkComponent } from '../edit-talk/edit-talk.component';
 import { MatDialog } from '@angular/material/dialog';
 import { DeleteTalkComponent } from '../delete-talk/delete-talk.component';
 import { BoardService } from '../board.service';
+import { Router, ActivatedRoute } from '@angular/router';
+import { cloneDeep } from "lodash";
+import * as moment from 'moment';
 
 @Component({
   selector: 'app-boards',
@@ -27,7 +26,7 @@ export class BoardsComponent implements OnInit {
     text: "Agreed joy vanity regret met may ladies oppose who. Mile fail as left as hard eyes. Meet made call in mean four year it to.",
     speaker: 'Pramod George',
     image: '',
-    tags: [{ name: 'okr' }, { name: 'research' }],
+    tags: [],
     cardType: '',
     status: 'ToDo',
     createdAt: '',
@@ -50,12 +49,14 @@ export class BoardsComponent implements OnInit {
   ];
 
   cards: any;
+  cardList: any[] = [];
+  boardId: string;
   innerWidth: any;
   innerHeight: any;
-  isLoading: boolean = false;
+  isLoading: boolean = true;
   heightOffset: number = 65;
 
-  constructor(private _dialog: MatDialog, private boardAPI: BoardService) { }
+  constructor(private _dialog: MatDialog, private boardAPI: BoardService, private router: Router, private route: ActivatedRoute) { }
 
   ngOnInit(): void {
     this.innerWidth = window.innerWidth;
@@ -63,22 +64,22 @@ export class BoardsComponent implements OnInit {
     this.cards = this.cardConfig.map((card) => {
       return { ...this.cardSchema, cardType: card.cardType, color: card.color };
     });
-    this.getBoard();
+    this.boardId = this.route.snapshot.params['id'];
+    this.listCards();
   }
 
-  getBoard() {
+  listCards() {
     this.isLoading = true;
-    this.boardAPI.getBoards().subscribe((response: any) => {
+    this.boardAPI.getCards(this.boardId).subscribe((response) => {
       this.isLoading = false;
-      if (response?.error?.text) {
-        console.error(response.error.text)
-        return;
-      }
-      this.boards = response;
-      if (response?.talks.length == 0) {
-        console.log("There is not card to display")
-      }
-    })
+      this.boards.talks = this.arrangeCards(response);
+      if (this.boards.talks.length > 0) this.boardAPI.notification("Cards are loaded successfully")
+      if (this.boards.talks.length == 0) this.boardAPI.notification("There is no cards to display")
+    },
+      (error) => {
+        this.isLoading = false;
+        this.boardAPI.notification();
+      })
   }
 
   @HostListener('window:resize', ['$event'])
@@ -87,23 +88,36 @@ export class BoardsComponent implements OnInit {
     this.innerHeight = window.innerHeight;
   }
 
-  newCard(card, index) {
-    let newCard = cloneDeep(this.cards[index]);
-    newCard.id = this.generateGuid();
+  newCard(card) {
+    let newCard = cloneDeep(this.cards[0]);
+    newCard.boradId = this.boardId;
+    newCard.parentId = null;
     card.talks.push(newCard);
-    this.isLoading = true;
-    this.boardAPI.addCard(this.boards).subscribe((response) => {
-      this.isLoading = false;
-    });
+    this.boardAPI.createCard(newCard).subscribe((response) => {
+      console.log(response)
+      this.boardAPI.notification("Cards created successfully");
+    },
+      (error) => {
+        this.boardAPI.notification();
+      });
   }
 
-  addCard(card) {
+  addCard(card, parentCard, index) {
     let newCard = cloneDeep(this.cards[1]);
-    newCard.id = this.generateGuid();
-    card.talks.push(newCard);
-    this.boardAPI.addCard(this.boards).subscribe((response) => {
-      this.isLoading = false;
-    });
+    newCard.boradId = this.boardId;
+    newCard.parentId = parentCard[index]['_id'];
+    console.log(newCard.parentId);
+
+    if (card.talks) card.talks.push(newCard);
+    if (!card.talks) card.talks = [newCard];
+
+    this.boardAPI.createCard(newCard).subscribe((response) => {
+      console.log(response)
+      this.boardAPI.notification("Cards created successfully");
+    },
+      (error) => {
+        this.boardAPI.notification();
+      });
   }
 
   editCard(event, card, talks, index) {
@@ -112,10 +126,6 @@ export class BoardsComponent implements OnInit {
       .afterClosed()
       .subscribe((newTalkData) => {
         Object.assign(card, newTalkData);
-        this.boardAPI.editCard(this.boards).subscribe((response) => {
-          this.isLoading = false;
-
-        });
       });
   }
 
@@ -126,11 +136,27 @@ export class BoardsComponent implements OnInit {
         if (response) {
           talks.splice(index, 1);
         }
-        this.boardAPI.editCard(this.boards).subscribe((response) => {
-          this.isLoading = false;
-
-        });
       });
+  }
+
+  arrangeCards(cards) {
+    let map = {}, node, roots = [], i;
+
+    for (i = 0; i < cards.length; i += 1) {
+      map[cards[i]._id] = i; // initialize the map
+      cards[i].talks = []; // initialize the talks
+    }
+
+    for (i = 0; i < cards.length; i += 1) {
+      node = cards[i];
+      if (node.parentId != null) {
+        // if you have dangling branches check that map[node.parentId] exists
+        cards[map[node.parentId]].talks.push(node);
+      } else {
+        roots.push(node);
+      }
+    }
+    return roots;
   }
 
   generateGuid() {
@@ -143,6 +169,22 @@ export class BoardsComponent implements OnInit {
       result = result + i;
     }
     return result;
+  }
+
+  getByID(board, id) {
+    let result = null
+    if (id === board.id) {
+      return board
+    } else {
+      if (board.talks) {
+        board.talks.some(card => result = this.getByID(card, id));
+      }
+      return result;
+    }
+  }
+
+  goBack() {
+    this.router.navigateByUrl('/boards');
   }
 
   export() {

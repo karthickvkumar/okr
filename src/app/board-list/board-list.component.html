@@ -1,0 +1,27 @@
+<div id="board-wrapper" [ngStyle]="{'width': innerWidth+'px', 'height':innerHeight-heightOffset+'px'}"
+    style="background-color: #f4f5f7;overflow: scroll;">
+    <div style="padding-top: 10px; margin-bottom: 10px">
+        <span class="btn-label">Create Boards :</span>
+        <button style="background-color:#3f51b5; color: white" mat-raised-button (click)="newBoard()"
+            [disabled]="isLoading">
+            Add New Board
+        </button>
+        <!-- <button style="background-color:#3f51b5; color: white" mat-raised-button (click)="export()">
+            Export
+        </button> -->
+    </div>
+
+    <div *ngFor="let board of boardList; let boardIndex = index" class="board" (click)="loadBoard(board)">
+        <div class="board-content">
+            <div class="board-title">{{board.title}}</div>
+            <div class="board-desc">{{board.description}}</div>
+        </div>
+    </div>
+    <div *ngIf="isLoading">
+        <img class="card-loader" src="../../assets/images/loader.gif" />
+    </div>
+    <div *ngIf="!boardList.length && !isLoading">
+        <span class="no-board">No boards to display</span>
+    </div>
+
+</div>

@@ -25,7 +25,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { NgxDaterangepickerMd } from 'ngx-daterangepicker-material';
-
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { CommonModule } from '@angular/common';
 import { ColorChromeModule } from 'ngx-color/chrome'; // <color-chrome></color-chrome>
 import { ColorPickerDialogComponent } from './shared/components/color-picker-dialog/color-picker-dialog.component';
@@ -35,6 +35,8 @@ import { BoardsComponent } from './boards/boards.component';
 import { FormatPipe } from './format.pipe';
 import { LoginComponent } from './login/login.component';
 import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
+import { BoardListComponent } from './board-list/board-list.component';
+import { BoardWrapperComponent } from './board-wrapper/board-wrapper.component';
 
 
 @NgModule({
@@ -48,7 +50,9 @@ import { PageNotFoundComponent } from './page-not-found/page-not-found.component
     BoardsComponent,
     FormatPipe,
     LoginComponent,
-    PageNotFoundComponent
+    PageNotFoundComponent,
+    BoardListComponent,
+    BoardWrapperComponent
   ],
   imports: [
     CommonModule,
@@ -76,6 +80,7 @@ import { PageNotFoundComponent } from './page-not-found/page-not-found.component
     ColorChromeModule,
     MatTooltipModule,
     HttpClientModule,
+    MatSnackBarModule,
     NgxDaterangepickerMd.forRoot()
   ],
   providers: [],

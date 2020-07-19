@@ -7,7 +7,7 @@ import * as moment from 'moment';
 export class FormatPipe implements PipeTransform {
 
   transform(value: any, ...args: unknown[]): string {
-    return moment(value.end).format("DD MMMM");
+    return moment(value).format("DD MMMM");
   }
 
 }

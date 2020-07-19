@@ -1,7 +1,6 @@
 import { Component } from '@angular/core';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
-import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { Router } from '@angular/router';
 import { BoardService } from '../board.service';
 import { Board } from '../shared/models/schema.model';
 
@@ -14,13 +13,13 @@ export class DrawerComponent {
   boards: Board[];
   constructor(
     private breakpointObserver: BreakpointObserver,
-    private boardService: BoardService
+    private boardService: BoardService,
+    private router: Router
   ) {
-    // this.boards = boardService.getBoards();
   }
 
-  // isHandset$: Observable<boolean> = this.breakpointObserver.observe(Breakpoints.Handset)
-  // .pipe(
-  //   map(result => result.matches)
-  // );
+  onLogout() {
+    localStorage.clear();
+    this.router.navigateByUrl('/');
+  }
 }

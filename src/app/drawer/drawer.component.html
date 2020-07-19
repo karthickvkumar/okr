@@ -14,7 +14,7 @@
   </button> -->
   <span>Requirement Management</span>
   <span class="example-spacer"></span>
-  <button mat-icon-button matTooltip="Logout" [routerLink]="['/']">
+  <button mat-icon-button matTooltip="Logout" (click)="onLogout()">
     <mat-icon>exit_to_app</mat-icon>
   </button>
 </mat-toolbar>
