@@ -27,10 +27,18 @@
     line-height: 1.45;
     font-weight: normal;
     letter-spacing: 0.005em;
+    float: left;
+    height: 100px;
+    width: 250px;
 }
 .board-title{
     font-weight: 500;
 }
 .board-desc{
     font-size: 15px;
+    height: 43px;
+    overflow: hidden;
+}
+.action-btn{
+    float: right;
 }

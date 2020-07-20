@@ -16,18 +16,15 @@ import * as moment from 'moment';
 export class BoardsComponent implements OnInit {
 
   boards: any = {
-    title: 'Requirement Management',
     talks: []
   };
 
   cardSchema: any = {
-    id: '',
     title: "Workflow Title",
-    text: "Agreed joy vanity regret met may ladies oppose who. Mile fail as left as hard eyes. Meet made call in mean four year it to.",
-    speaker: 'Pramod George',
+    description: "Agreed joy vanity regret met may ladies oppose who. Mile fail as left as hard eyes. Meet made call in mean four year it to.",
+    author: 'Pramod George',
     image: '',
     tags: [],
-    cardType: '',
     status: 'ToDo',
     createdAt: '',
     selectedDate: {
@@ -48,6 +45,7 @@ export class BoardsComponent implements OnInit {
     }
   ];
 
+
   cards: any;
   cardList: any[] = [];
   boardId: string;
@@ -64,6 +62,7 @@ export class BoardsComponent implements OnInit {
     this.cards = this.cardConfig.map((card) => {
       return { ...this.cardSchema, cardType: card.cardType, color: card.color };
     });
+
     this.boardId = this.route.snapshot.params['id'];
     this.listCards();
   }
@@ -94,7 +93,6 @@ export class BoardsComponent implements OnInit {
     newCard.parentId = null;
     card.talks.push(newCard);
     this.boardAPI.createCard(newCard).subscribe((response) => {
-      console.log(response)
       this.boardAPI.notification("Cards created successfully");
     },
       (error) => {
@@ -102,17 +100,17 @@ export class BoardsComponent implements OnInit {
       });
   }
 
-  addCard(card, parentCard, index) {
+  addCard(event, card, parentCard, index) {
+    event.stopPropagation();
     let newCard = cloneDeep(this.cards[1]);
     newCard.boradId = this.boardId;
     newCard.parentId = parentCard[index]['_id'];
-    console.log(newCard.parentId);
 
     if (card.talks) card.talks.push(newCard);
     if (!card.talks) card.talks = [newCard];
 
     this.boardAPI.createCard(newCard).subscribe((response) => {
-      console.log(response)
+      Object.assign(newCard, response)
       this.boardAPI.notification("Cards created successfully");
     },
       (error) => {
@@ -125,7 +123,15 @@ export class BoardsComponent implements OnInit {
     this._dialog.open(EditTalkComponent, { data: { card }, width: '500px' })
       .afterClosed()
       .subscribe((newTalkData) => {
+        if (newTalkData == '') return;
         Object.assign(card, newTalkData);
+
+        this.boardAPI.editCard(card).subscribe((response) => {
+          this.boardAPI.notification("Card updated successfully");
+        },
+          (error) => {
+            this.boardAPI.notification();
+          })
       });
   }
 
@@ -133,25 +139,29 @@ export class BoardsComponent implements OnInit {
     this._dialog.open(DeleteTalkComponent, { data: card, width: '500px' })
       .afterClosed()
       .subscribe(response => {
-        if (response) {
+        if (response && card._id) {
           talks.splice(index, 1);
+          this.boardAPI.deleteCard(card._id).subscribe((response) => {
+            this.boardAPI.notification("Card deleted successfully");
+          },
+            (error) => {
+              this.boardAPI.notification();
+            })
         }
       });
   }
 
   arrangeCards(cards) {
     let map = {}, node, roots = [], i;
-
     for (i = 0; i < cards.length; i += 1) {
       map[cards[i]._id] = i; // initialize the map
       cards[i].talks = []; // initialize the talks
     }
-
     for (i = 0; i < cards.length; i += 1) {
       node = cards[i];
       if (node.parentId != null) {
         // if you have dangling branches check that map[node.parentId] exists
-        cards[map[node.parentId]].talks.push(node);
+        if (cards[map[node.parentId]]) cards[map[node.parentId]].talks.push(node);
       } else {
         roots.push(node);
       }

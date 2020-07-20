@@ -58,13 +58,45 @@ export class BoardListComponent implements OnInit {
     }
     this.boardList.push(board);
     this.boardAPI.createBoard(board).subscribe((response: any) => {
-      console.log(response)
-      Object.assign(board, response)
+      Object.assign(board, response);
       this.boardAPI.notification("Board created successfully");
     },
       (error) => {
         this.boardList.pop();
         this.boardAPI.notification()
+      });
+  }
+
+  editBoard(board) {
+    this._dialog.open(EditTalkComponent, { data: { card: board }, width: '500px' })
+      .afterClosed()
+      .subscribe((newBoardData) => {
+        Object.assign(board, newBoardData);
+        this.boardAPI.editBoard(board).subscribe((response) => {
+          this.boardAPI.notification("Board updated successfully");
+        },
+          (error) => {
+            this.boardAPI.notification()
+          })
+      });
+  }
+
+  deleteBoard(board, index) {
+    if (!board._id) {
+      this.boardAPI.notification();
+      return;
+    }
+    this._dialog.open(DeleteTalkComponent, { data: board, width: '500px' })
+      .afterClosed()
+      .subscribe(response => {
+        if (!response) return
+        this.boardList.splice(index, 1);
+        this.boardAPI.deleteBoard(board._id).subscribe((response) => {
+          this.boardAPI.notification("Board deleted successfully");
+        },
+          (error) => {
+            this.boardAPI.notification();
+          })
       });
   }
 

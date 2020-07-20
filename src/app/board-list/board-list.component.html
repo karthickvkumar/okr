@@ -11,8 +11,22 @@
         </button> -->
     </div>
 
-    <div *ngFor="let board of boardList; let boardIndex = index" class="board" (click)="loadBoard(board)">
-        <div class="board-content">
+    <div *ngFor="let board of boardList; let boardIndex = index" class="board">
+        <div class="action-btn">
+            <button mat-icon-button [matMenuTriggerFor]="cardOption" matTooltip="Options" style="width: 20px;">
+                <mat-icon>more_vert</mat-icon>
+            </button>
+            <mat-menu #cardOption="matMenu">
+                <button mat-menu-item (click)="editBoard(board)">
+                    <mat-icon>create</mat-icon>
+                    <span>Edit</span>
+                </button>
+                <button mat-menu-item (click)="deleteBoard(board, boardIndex)">
+                    <mat-icon>delete</mat-icon><span>Delete</span>
+                </button>
+            </mat-menu>
+        </div>
+        <div class="board-content" (click)="loadBoard(board)">
             <div class="board-title">{{board.title}}</div>
             <div class="board-desc">{{board.description}}</div>
         </div>

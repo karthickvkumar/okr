@@ -25,6 +25,16 @@ export class BoardService {
     return this.http.get(url);
   }
 
+  editBoard(board) {
+    let url: string = this.baseURL + "/board/edit";
+    return this.http.put(url, board);
+  }
+
+  deleteBoard(boardId) {
+    let url: string = this.baseURL + "/board/delete/" + boardId;
+    return this.http.delete(url);
+  }
+
   getCards(boardId) {
     let url: string = this.baseURL + "/cards/" + boardId;
     return this.http.get(url);
@@ -34,6 +44,17 @@ export class BoardService {
     let url: string = this.baseURL + "/card/add";
     return this.http.post(url, card);
   }
+
+  editCard(card) {
+    let url: string = this.baseURL + "/card/edit";
+    return this.http.put(url, card);
+  }
+
+  deleteCard(cardId) {
+    let url: string = this.baseURL + "/card/delete/" + cardId;
+    return this.http.delete(url);
+  }
+
 
   notification(message = "Server Error, Please try again later") {
     this.snackBar.open(message, 'close', {

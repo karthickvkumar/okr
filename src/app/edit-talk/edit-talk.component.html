@@ -1,10 +1,10 @@
 <form [formGroup]="formGroup" (ngSubmit)="onSubmit()">
-  <img *ngIf="data?.card.image" [src]="data?.card.image" alt="Talk image preview">
+  <img *ngIf="data?.card?.image" [src]="data?.card?.image" alt="Talk image preview">
   <mat-form-field>
     <input matInput placeholder="Workflow Title" formControlName="title">
   </mat-form-field>
   <mat-form-field>
-    <textarea matInput placeholder="Talk description" required formControlName="text"></textarea>
+    <textarea matInput placeholder="Talk description" required formControlName="description"></textarea>
   </mat-form-field>
 
   <mat-form-field>
@@ -17,7 +17,7 @@
   </mat-form-field>
 
   <mat-form-field>
-    <input matInput placeholder="Speaker" required formControlName="speaker">
+    <input matInput placeholder="Author" required formControlName="author">
   </mat-form-field>
 
   <mat-form-field>
@@ -46,7 +46,7 @@
         -->
       <mat-chip [style.background]="tag?.color ? tag.color : '#e0e0e0'"
         *ngFor="let tag of this.formGroup.get('tags').value" (removed)="removeTag(tag)">
-        {{tag?.name}}
+        {{tag}}
         <!-- Add an icon that allows the user to delete a talk via click. -->
         <mat-icon (click)="openColorPickerDialog(tag)"
           class="mat-icon notranslate mat-chip-remove mat-chip-trailing-icon material-icons mat-icon-no-color">

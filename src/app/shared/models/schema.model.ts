@@ -6,7 +6,9 @@ export interface Talk {
     id: string;
     text: string;
     title: string;
-    speaker?: string;
+    description: string;
+    selectedDate: any;
+    author?: string;
     tags?: Tag[];
     linked?: Talk[];
     height: number;

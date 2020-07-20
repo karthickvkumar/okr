@@ -33,16 +33,18 @@ export class EditTalkComponent implements OnInit {
 
   ngOnInit() {
     const card = this.data && this.data.card ? this.data.card : null;
+    const startDate = card.selectedDate && card.selectedDate.start ? card.selectedDate.start : moment(new Date());
+    const endDate = card.selectedDate && card.selectedDate.end ? card.selectedDate.end : moment(new Date());
 
     this.formGroup = this.formBuilder.group({
       title: [card && card.title ? card.title : ''],
-      text: [card && card.text ? card.text : '', Validators.required],
-      speaker: [card && card.speaker ? card.speaker : '', Validators.required],
+      description: [card && card.description ? card.description : '', Validators.required],
+      author: [card && card.author ? card.author : '', Validators.required],
       image: [card && card.image ? card.image : ''],
       tags: [card && card.tags ? card.tags : []],
-      status: [card && card.status ? card.status : []],
+      status: [card && card.status ? card.status : ''],
       createdAt: [card && card.createdAt ? card.createdAt : new Date()],
-      selectedDate: [{ start: moment(new Date()), end: moment(new Date()) }, Validators.required],
+      selectedDate: [{ start: startDate, end: endDate }, Validators.required],
     });
   }
 
@@ -58,15 +60,14 @@ export class EditTalkComponent implements OnInit {
 
   addTag(event: MatChipInputEvent) {
     const tagsControl = this.formGroup.get('tags');
-
     // Create a new array of tags, if the talk doesn't have any,
     // otherwise add the new tag to the existing array.
     if (tagsControl.value) {
-      tagsControl.value.push({ name: event.value, color: '#e0e0e0' });
+      // tagsControl.value.push({ name: event.value, color: '#e0e0e0' });
+      tagsControl.value.push(event.value);
     } else {
       tagsControl.setValue([event.value]);
     }
-
     // Clear the input's value once the tag has been added.
     event.input.value = '';
   }
