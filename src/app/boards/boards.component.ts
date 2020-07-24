@@ -5,7 +5,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { DeleteTalkComponent } from '../delete-talk/delete-talk.component';
 import { BoardService } from '../board.service';
 import { Router, ActivatedRoute } from '@angular/router';
-import { cloneDeep } from "lodash";
+import { cloneDeep, maxBy } from "lodash";
 import * as moment from 'moment';
 
 @Component({
@@ -45,7 +45,6 @@ export class BoardsComponent implements OnInit {
     }
   ];
 
-
   cards: any;
   cardList: any[] = [];
   boardId: string;
@@ -53,6 +52,8 @@ export class BoardsComponent implements OnInit {
   innerHeight: any;
   isLoading: boolean = true;
   heightOffset: number = 65;
+  cardHolder: any[] = [];
+  cardHolderCount: number = 0;
 
   constructor(private _dialog: MatDialog, private boardAPI: BoardService, private router: Router, private route: ActivatedRoute) { }
 
@@ -91,8 +92,16 @@ export class BoardsComponent implements OnInit {
     let newCard = cloneDeep(this.cards[0]);
     newCard.boradId = this.boardId;
     newCard.parentId = null;
+    newCard.level = 1;
+
+    if (this.cardHolder.length == 0) {
+      this.cardHolder.push('Workflow ' + this.cardHolder.length);
+      console.log(this.cardHolder)
+    }
+
     card.talks.push(newCard);
     this.boardAPI.createCard(newCard).subscribe((response) => {
+      Object.assign(newCard, response);
       this.boardAPI.notification("Cards created successfully");
     },
       (error) => {
@@ -105,6 +114,13 @@ export class BoardsComponent implements OnInit {
     let newCard = cloneDeep(this.cards[1]);
     newCard.boradId = this.boardId;
     newCard.parentId = parentCard[index]['_id'];
+    newCard.level = parentCard[index]['level'] + 1;
+
+    if (newCard.level > this.cardHolderCount) {
+      this.cardHolderCount = newCard.level;
+      this.cardHolder.push('Workflow ' + this.cardHolder.length);
+      console.log(this.cardHolder)
+    }
 
     if (card.talks) card.talks.push(newCard);
     if (!card.talks) card.talks = [newCard];
@@ -140,13 +156,25 @@ export class BoardsComponent implements OnInit {
       .afterClosed()
       .subscribe(response => {
         if (response && card._id) {
-          talks.splice(index, 1);
-          this.boardAPI.deleteCard(card._id).subscribe((response) => {
-            this.boardAPI.notification("Card deleted successfully");
-          },
-            (error) => {
-              this.boardAPI.notification();
-            })
+          console.log(this.destructor(this.boards.talks))
+          console.log(this.traverse(this.boards))
+          let flat = this.boards.talks.map((card) => {
+            return this.traverse(card)[0]
+          })
+          console.log(flat)
+          // if (card.level > this.cardHolderCount) {
+          //   this.cardHolderCount = card.level - 1;
+          //   this.cardHolder.pop();
+          //   console.log(this.cardHolder)
+          // }
+
+          // talks.splice(index, 1);
+          // this.boardAPI.deleteCard(card._id).subscribe((response) => {
+          //   this.boardAPI.notification("Card deleted successfully");
+          // },
+          //   (error) => {
+          //     this.boardAPI.notification();
+          //   })
         }
       });
   }
@@ -157,28 +185,28 @@ export class BoardsComponent implements OnInit {
       map[cards[i]._id] = i; // initialize the map
       cards[i].talks = []; // initialize the talks
     }
+
     for (i = 0; i < cards.length; i += 1) {
       node = cards[i];
       if (node.parentId != null) {
         // if you have dangling branches check that map[node.parentId] exists
-        if (cards[map[node.parentId]]) cards[map[node.parentId]].talks.push(node);
+        if (cards[map[node.parentId]]) {
+          cards[map[node.parentId]].talks.push(node);
+        }
       } else {
         roots.push(node);
       }
     }
-    return roots;
-  }
+    let max = maxBy(cards, 'level');
+    if (max) {
+      this.cardHolderCount = max.level;
 
-  generateGuid() {
-    let result, i, j;
-    result = '';
-    for (j = 0; j < 32; j++) {
-      if (j == 8 || j == 12 || j == 16 || j == 20)
-        result = result + '-';
-      i = Math.floor(Math.random() * 16).toString(16).toUpperCase();
-      result = result + i;
+      for (i = 0; i < max.level; i += 1) {
+        this.cardHolder[i] = 'Workflow ' + i;
+      }
     }
-    return result;
+    console.log(this.cardHolder)
+    return roots;
   }
 
   getByID(board, id) {
@@ -199,6 +227,45 @@ export class BoardsComponent implements OnInit {
 
   export() {
     console.log(this.boards.talks)
+  }
+
+  traverse(board, path = [], result = []) {
+    if (!board.talks.length)
+      if (board._id) result.push(path.concat(board));
+    for (const child of board.talks)
+      this.traverse(child, path.concat(board), result);
+    return result;
+  }
+
+  destructor(boards) {
+    let result = [];
+    let flat = (data, prev = '') => {
+      if (Array.isArray(data)) {
+        data.forEach(e => flat(e, prev))
+      } else {
+        prev = prev + (prev.length ? '.' : '') + data.level;
+        console.log(prev.split('.').map(Number))
+        if (!data.talks.length) result.push(prev.split('.').map(Number))
+        else flat(data.talks, prev)
+      }
+    }
+
+    flat(boards);
+    return result;
+  }
+
+
+
+  generateGuid() {
+    let result, i, j;
+    result = '';
+    for (j = 0; j < 32; j++) {
+      if (j == 8 || j == 12 || j == 16 || j == 20)
+        result = result + '-';
+      i = Math.floor(Math.random() * 16).toString(16).toUpperCase();
+      result = result + i;
+    }
+    return result;
   }
 
 }

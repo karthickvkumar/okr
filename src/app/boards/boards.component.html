@@ -1,5 +1,4 @@
-<div id="card-wrapper" [ngStyle]="{'width': innerWidth+'px', 'height':innerHeight-heightOffset+'px'}"
-    style="background-color: #f4f5f7;overflow: scroll;">
+<div id="card-wrapper" [ngStyle]="{'width': innerWidth+'px', 'height':innerHeight-heightOffset+'px'}">
     <div style="padding-top: 10px; margin-bottom: 10px">
         <span class="btn-label">Create Workflow :</span>
         <button style="background-color:#3f51b5; color: white" mat-raised-button (click)="newCard(boards)"
@@ -10,14 +9,22 @@
             Back to Boards
         </button>
     </div>
-
-    <div *ngFor="let board of boards.talks; let boardIndex = index; let lastIndex = last;">
-        <ng-template [ngTemplateOutlet]="recursiveBoard"
-            [ngTemplateOutletContext]="{ $implicit: board, boards: boards.talks, boardIndex:boardIndex, lastIndex: lastIndex}">
-        </ng-template>
+    <!-- Blocks -->
+    <div style="position:relative" *ngFor="let holder of cardHolder; let holderIndex = index;">
+        <div style="float:left; width: 50px; height:500px; border :1px solid black">
+            {{holder}}
+        </div>
+    </div>
+    <!-- End of Blocks  -->
+    <div style="position: absolute;">
+        <div *ngFor="let board of boards.talks; let boardIndex = index; let lastIndex = last;">
+            <ng-template [ngTemplateOutlet]="recursiveBoard"
+                [ngTemplateOutletContext]="{ $implicit: board, boards: boards.talks, boardIndex:boardIndex, lastIndex: lastIndex}">
+            </ng-template>
+        </div>
     </div>
     <div *ngIf="isLoading">
-        <img class="card-loader" src="../../assets/images/loader.gif" />
+        <img class="card-loader" src="assets/images/loader.gif" />
     </div>
     <div *ngIf="!boards.talks.length && !isLoading">
         <span class="no-board">No Cards to display</span>
@@ -28,7 +35,7 @@
 <ng-template #recursiveBoard let-board let-boards="boards" let-boardIndex="boardIndex" let-lastIndex="lastIndex">
     <div [ngClass]="{'epic' : !board.parentId, 'release': board.parentId }"
         [ngStyle]="{'margin-bottom' : lastIndex ? '0px' : '10px'}"
-        (click)="editCard($event,board, boards.talks, boardIndex)">
+        (click)="editCard($event, board, boards.talks, boardIndex)">
         <div class="action-btn">
             <button (click)="$event.stopPropagation();" mat-icon-button [matMenuTriggerFor]="cardOption"
                 matTooltip="Options" style="width: 20px;transform: scale(0.8);">

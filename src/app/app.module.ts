@@ -1,5 +1,6 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
+import { HashLocationStrategy, LocationStrategy } from '@angular/common';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import * as _moment from 'moment';
 import { HttpClientModule } from '@angular/common/http';
@@ -83,7 +84,7 @@ import { BoardWrapperComponent } from './board-wrapper/board-wrapper.component';
     MatSnackBarModule,
     NgxDaterangepickerMd.forRoot()
   ],
-  providers: [],
+  providers: [{ provide: LocationStrategy, useClass: HashLocationStrategy }],
   entryComponents: [EditTalkComponent, DeleteTalkComponent],
   bootstrap: [AppComponent]
 })
