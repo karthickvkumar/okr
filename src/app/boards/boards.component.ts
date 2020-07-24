@@ -5,7 +5,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { DeleteTalkComponent } from '../delete-talk/delete-talk.component';
 import { BoardService } from '../board.service';
 import { Router, ActivatedRoute } from '@angular/router';
-import { cloneDeep, maxBy } from "lodash";
+import { cloneDeep, maxBy, max } from "lodash";
 import * as moment from 'moment';
 
 @Component({
@@ -73,6 +73,7 @@ export class BoardsComponent implements OnInit {
     this.boardAPI.getCards(this.boardId).subscribe((response) => {
       this.isLoading = false;
       this.boards.talks = this.arrangeCards(response);
+      this.getCardHolder();
       if (this.boards.talks.length > 0) this.boardAPI.notification("Cards are loaded successfully")
       if (this.boards.talks.length == 0) this.boardAPI.notification("There is no cards to display")
     },
@@ -94,12 +95,9 @@ export class BoardsComponent implements OnInit {
     newCard.parentId = null;
     newCard.level = 1;
 
-    if (this.cardHolder.length == 0) {
-      this.cardHolder.push('Workflow ' + this.cardHolder.length);
-      console.log(this.cardHolder)
-    }
-
     card.talks.push(newCard);
+    this.getCardHolder();
+
     this.boardAPI.createCard(newCard).subscribe((response) => {
       Object.assign(newCard, response);
       this.boardAPI.notification("Cards created successfully");
@@ -116,14 +114,9 @@ export class BoardsComponent implements OnInit {
     newCard.parentId = parentCard[index]['_id'];
     newCard.level = parentCard[index]['level'] + 1;
 
-    if (newCard.level > this.cardHolderCount) {
-      this.cardHolderCount = newCard.level;
-      this.cardHolder.push('Workflow ' + this.cardHolder.length);
-      console.log(this.cardHolder)
-    }
-
     if (card.talks) card.talks.push(newCard);
     if (!card.talks) card.talks = [newCard];
+    this.getCardHolder();
 
     this.boardAPI.createCard(newCard).subscribe((response) => {
       Object.assign(newCard, response)
@@ -156,25 +149,16 @@ export class BoardsComponent implements OnInit {
       .afterClosed()
       .subscribe(response => {
         if (response && card._id) {
-          console.log(this.destructor(this.boards.talks))
-          console.log(this.traverse(this.boards))
-          let flat = this.boards.talks.map((card) => {
-            return this.traverse(card)[0]
-          })
-          console.log(flat)
-          // if (card.level > this.cardHolderCount) {
-          //   this.cardHolderCount = card.level - 1;
-          //   this.cardHolder.pop();
-          //   console.log(this.cardHolder)
-          // }
 
-          // talks.splice(index, 1);
-          // this.boardAPI.deleteCard(card._id).subscribe((response) => {
-          //   this.boardAPI.notification("Card deleted successfully");
-          // },
-          //   (error) => {
-          //     this.boardAPI.notification();
-          //   })
+          talks.splice(index, 1);
+          this.getCardHolder();
+
+          this.boardAPI.deleteCard(card._id).subscribe((response) => {
+            this.boardAPI.notification("Card deleted successfully");
+          },
+            (error) => {
+              this.boardAPI.notification();
+            })
         }
       });
   }
@@ -182,14 +166,12 @@ export class BoardsComponent implements OnInit {
   arrangeCards(cards) {
     let map = {}, node, roots = [], i;
     for (i = 0; i < cards.length; i += 1) {
-      map[cards[i]._id] = i; // initialize the map
-      cards[i].talks = []; // initialize the talks
+      map[cards[i]._id] = i;
+      cards[i].talks = [];
     }
-
     for (i = 0; i < cards.length; i += 1) {
       node = cards[i];
       if (node.parentId != null) {
-        // if you have dangling branches check that map[node.parentId] exists
         if (cards[map[node.parentId]]) {
           cards[map[node.parentId]].talks.push(node);
         }
@@ -197,16 +179,26 @@ export class BoardsComponent implements OnInit {
         roots.push(node);
       }
     }
-    let max = maxBy(cards, 'level');
-    if (max) {
-      this.cardHolderCount = max.level;
-
-      for (i = 0; i < max.level; i += 1) {
-        this.cardHolder[i] = 'Workflow ' + i;
-      }
-    }
-    console.log(this.cardHolder)
     return roots;
+  }
+
+  getCardHolder() {
+    const cards = this.destructor(this.boards.talks);
+    if (cards.length == 0) {
+      this.cardHolderCount = 0;
+      this.cardHolder = [];
+      return;
+    }
+    let maxValue = max(cards.map((card) => {
+      return card.length
+    }));
+    this.cardHolderCount = maxValue;
+    let maxLevel = cards.filter((card) => {
+      return card.length == maxValue
+    });
+    this.cardHolder = maxLevel[0].map((index) => {
+      return "workflow " + index
+    })
   }
 
   getByID(board, id) {
@@ -244,17 +236,13 @@ export class BoardsComponent implements OnInit {
         data.forEach(e => flat(e, prev))
       } else {
         prev = prev + (prev.length ? '.' : '') + data.level;
-        console.log(prev.split('.').map(Number))
         if (!data.talks.length) result.push(prev.split('.').map(Number))
         else flat(data.talks, prev)
       }
     }
-
     flat(boards);
     return result;
   }
-
-
 
   generateGuid() {
     let result, i, j;
