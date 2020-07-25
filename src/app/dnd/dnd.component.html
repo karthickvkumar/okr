@@ -1,0 +1,41 @@
+<ng-template #tmplNode let-node="node">
+    <div class="node-item" [attr.data-id]="node.id" [attr.id]="'node-'+node.id">
+        <div class="node-title">
+            {{node.id}}
+            <span class="item-notes">{{node.children.length}}</span>
+        </div>
+
+        <div *ngIf="node.children.length" class="node-children" cdkDropList [cdkDropListData]="node.children"
+            [id]="node.id" [cdkDropListConnectedTo]="dropTargetIds" (cdkDropListDropped)="drop($event)"
+            [cdkDropListSortingDisabled]="true">
+
+            <div class="child-item-wrap" [ngClass]="{'first-child': firstIndex}"
+                *ngFor="let child of node.children; let nodeIndex = index; let firstIndex = first" cdkDrag
+                [cdkDragData]="child.id" (cdkDragMoved)="dragMoved($event)" (click)="cardEdit()">
+                <ng-container *ngTemplateOutlet="tmplNode,context:{node:child}"></ng-container>
+            </div>
+
+        </div>
+
+    </div>
+</ng-template>
+
+<div cdkDropList [cdkDropListData]="nodes" [id]="'main'" [cdkDropListConnectedTo]="dropTargetIds"
+    (cdkDropListDropped)="drop($event)" [cdkDropListSortingDisabled]="true">
+
+    <div class="item-wrap" *ngFor="let node of nodes, let nodeIndex = index; let firstIndex = first" cdkDrag
+        [cdkDragData]="node.id" (cdkDragMoved)="dragMoved($event)">
+
+        <ng-container *ngTemplateOutlet="tmplNode,context:{node:node, nodeIndex:nodeIndex, firstIndex: firstIndex}">
+        </ng-container>
+
+    </div>
+</div>
+
+
+<!-- <hr />
+<p><strong>current drag drop action:</strong></p>
+<pre>{{dropActionTodo|json}}</pre>
+<hr />x
+<p><strong>tree data</strong></p>
+<pre>{{nodes|json}}</pre> -->

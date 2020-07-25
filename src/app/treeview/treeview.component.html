@@ -1,0 +1,18 @@
+<!-- <tree-root [state]="state" [options]="options" [focused]="true" [nodes]="nodes"></tree-root> -->
+<tree-root #tree [nodes]="nodes" (initialized)="onTreeLoad()">
+    <ng-template #treeNodeWrapperTemplate let-node let-index="index" let-first="first">
+        <div class="node-wrapper" [style.padding-left]="node.getNodePadding()">
+            <!-- <tree-node-expander [node]="node"></tree-node-expander> -->
+            <div class="node-content-wrapper" [class.node-content-wrapper-active]="node.isActive"
+                [class.node-content-wrapper-focused]="node.isFocused" (click)="node.mouseAction('click', $event)"
+                (dblclick)="node.mouseAction('dblClick', $event)"
+                (contextmenu)="node.mouseAction('contextMenu', $event)" (treeDrop)="node.onDrop($event)"
+                [treeAllowDrop]="node.allowDrop" [treeDrag]="node" [treeDragEnabled]="node.allowDrag()">
+            </div>
+            <div style="width: 200px;height: 50px;background-color: violet;">
+                <h2>{{first}}</h2>
+            </div>
+            <tree-node-content [node]="node" [index]="index"></tree-node-content>
+        </div>
+    </ng-template>
+</tree-root>

@@ -117,3 +117,8 @@
   transform: translate(30px, 0);
   width: 340px;
 }
+
+.drag-target-border{
+    border-style: dashed;
+    border-color: rgb(43, 141, 226);
+}

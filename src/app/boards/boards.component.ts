@@ -55,6 +55,9 @@ export class BoardsComponent implements OnInit {
   cardHolder: any[] = [];
   cardHolderCount: number = 0;
 
+  COLUMNS = 'COLUMNS';
+  TALKS = 'TALKS';
+
   constructor(private _dialog: MatDialog, private boardAPI: BoardService, private router: Router, private route: ActivatedRoute) { }
 
   ngOnInit(): void {
@@ -67,6 +70,8 @@ export class BoardsComponent implements OnInit {
     this.boardId = this.route.snapshot.params['id'];
     this.listCards();
   }
+
+
 
   listCards() {
     this.isLoading = true;

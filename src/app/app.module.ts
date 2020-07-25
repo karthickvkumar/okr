@@ -38,7 +38,19 @@ import { LoginComponent } from './login/login.component';
 import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
 import { BoardListComponent } from './board-list/board-list.component';
 import { BoardWrapperComponent } from './board-wrapper/board-wrapper.component';
-
+import { NgDragDropModule } from 'ng-drag-drop';
+import { DragulaModule } from 'ng2-dragula';
+import { DndComponent } from './dnd/dnd.component';
+import { MatDndComponent } from './mat-dnd/mat-dnd.component';
+import { A11yModule } from '@angular/cdk/a11y';
+import { PortalModule } from '@angular/cdk/portal';
+import { ScrollingModule } from '@angular/cdk/scrolling';
+import { CdkStepperModule } from '@angular/cdk/stepper';
+import { CdkTableModule } from '@angular/cdk/table';
+import { CdkTreeModule } from '@angular/cdk/tree';
+import { MatTreeModule } from '@angular/material/tree';
+import { TreeviewComponent } from './treeview/treeview.component';
+import { TreeModule } from '@circlon/angular-tree-component';
 
 @NgModule({
   declarations: [
@@ -53,7 +65,10 @@ import { BoardWrapperComponent } from './board-wrapper/board-wrapper.component';
     LoginComponent,
     PageNotFoundComponent,
     BoardListComponent,
-    BoardWrapperComponent
+    BoardWrapperComponent,
+    DndComponent,
+    MatDndComponent,
+    TreeviewComponent
   ],
   imports: [
     CommonModule,
@@ -82,7 +97,17 @@ import { BoardWrapperComponent } from './board-wrapper/board-wrapper.component';
     MatTooltipModule,
     HttpClientModule,
     MatSnackBarModule,
-    NgxDaterangepickerMd.forRoot()
+    NgxDaterangepickerMd.forRoot(),
+    NgDragDropModule.forRoot(),
+    DragulaModule.forRoot(),
+    PortalModule,
+    ScrollingModule,
+    CdkStepperModule,
+    CdkTableModule,
+    CdkTreeModule,
+    A11yModule,
+    MatTreeModule,
+    TreeModule
   ],
   providers: [{ provide: LocationStrategy, useClass: HashLocationStrategy }],
   entryComponents: [EditTalkComponent, DeleteTalkComponent],

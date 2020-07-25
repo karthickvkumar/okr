@@ -1,0 +1,21 @@
+<p>Drag and drop the tree nodes. Move them within the same level, or across different levels.</p>
+
+<mat-tree [dataSource]="dataSource" [treeControl]="treeControl" cdkDropList (cdkDropListDropped)="drop($event)">
+    <mat-tree-node *matTreeNodeDef="let node" matTreeNodeToggle matTreeNodePadding cdkDrag [cdkDragData]="node"
+        (mouseenter)="dragHover(node)" (mouseleave)="dragHoverEnd()" (cdkDragStarted)="dragStart()"
+        (cdkDragReleased)="dragEnd()">
+        <button mat-icon-button disabled></button>
+        {{node.filename}} : {{node.type}}
+    </mat-tree-node>
+
+    <mat-tree-node *matTreeNodeDef="let node;when: hasChild" matTreeNodePadding cdkDrag [cdkDragData]="node"
+        (mouseenter)="dragHover(node)" (mouseleave)="dragHoverEnd()" (cdkDragStarted)="dragStart()"
+        (cdkDragReleased)="dragEnd()">
+        <!-- <button mat-icon-button matTreeNodeToggle [attr.aria-label]="'toggle ' + node.filename">
+            <mat-icon class="mat-icon-rtl-mirror">
+                {{treeControl.isExpanded(node) ? 'expand_more' : 'chevron_right'}}
+            </mat-icon>
+        </button> -->
+        {{node.filename}} : {{node.type}}
+    </mat-tree-node>
+</mat-tree>
